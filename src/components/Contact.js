@@ -15,7 +15,7 @@ class Contact extends Component {
     const { name, email, phone } = this.props.contact;
     return (
       <div className='card card-body mb-3'>
-        <h4 className='card-title' onClick={() => onShowClick()}>
+        <h4 className='card-title' onClick={() => this.onShowClick()}>
           {name}
           <i className="fas fa-sort-down ml-2"></i>
         </h4>
