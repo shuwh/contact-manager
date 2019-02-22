@@ -1,5 +1,7 @@
-import React, { Component } from 'react'
-import PropTypes from 'prop-types'
+import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+
+import { Consumer } from '../context';
 
 
 class Contact extends Component {
@@ -11,14 +13,17 @@ class Contact extends Component {
     this.setState({ showContactInfo: !this.state.showContactInfo })
   }
 
-  onDeleteClick = () => {
-    this.props.deleteClickHandler();
+  onDeleteClick = (dispatch, id) => {
+    dispatch({
+      type: 'DELETE_CONTACT',
+      payload: id,
+    })
   }
 
 
 
   render() {
-    const { name, email, phone } = this.props.contact;
+    const { id, name, email, phone } = this.props.contact;
     const titleStyle = this.state.showContactInfo ?
       ['fas', 'ml-2', 'fa-sort-up'] :
       ['fas', 'ml-2', 'fa-sort-down'];
@@ -30,21 +35,27 @@ class Contact extends Component {
       null;
 
     return (
-      <div className='card card-body mb-3'>
-        <h4 className='card-title d-flex flex-row' >
-          {name}
-          <i className={titleStyle.join(" ")} style={{ cursor: 'pointer' }} onClick={this.onShowClick}></i>
-          <i className="fas fa-times text-danger ml-auto" style={{ cursor: 'pointer' }} onClick={this.onDeleteClick}></i>
-        </h4>
-        {contactInfo}
-      </div>
+      <Consumer >
+        {value => {
+          const { dispatch } = value;
+          return (
+            <div className='card card-body mb-3'>
+              <h4 className='card-title d-flex flex-row' >
+                {name}
+                <i className={titleStyle.join(" ")} style={{ cursor: 'pointer' }} onClick={this.onShowClick}></i>
+                <i className="fas fa-times text-danger ml-auto" style={{ cursor: 'pointer' }} onClick={() => this.onDeleteClick(dispatch, id)}></i>
+              </h4>
+              {contactInfo}
+            </div>
+          );
+        }}
+      </Consumer>
     )
   }
 }
 
 Contact.propTypes = {
   contact: PropTypes.object.isRequired,
-  deleteClickHandler: PropTypes.func.isRequired,
 }
 
 export default Contact
